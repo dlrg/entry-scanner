@@ -18,7 +18,7 @@ router.post('/password', (req, res) => {
   if(!req.isAuthenticated()) {
     return res.render('failed', {
       title: 'Nicht Autenfiziert!',
-      message: 'Du must dich angemeldet haben und ein Administrator sein um diese Seite besuchen zu können.'
+      message: 'Du must dich angemeldet haben sein um diese Seite besuchen zu können.'
     })
 	}
 	req.user.changePassword(req.body.oldPassword, req.body.newPassword)

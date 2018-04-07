@@ -1,0 +1,6 @@
+extends ../app
+
+block body
+	svg.barcode(jsbarcode-value=scanner.token)
+	hr
+	a(href='/scanners', style='margin-left:10px;') Zurück

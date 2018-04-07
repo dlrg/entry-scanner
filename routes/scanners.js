@@ -4,11 +4,26 @@ var Scanners = require('../models/Scanners')
 var router = express.Router()
 var passport = require('passport')
 
+
+router.get('/:id/barcode', (req, res) => {
+  if(!req.isAuthenticated()) {
+    return res.render('failed', {
+      title: 'Nicht Autenfiziert!',
+      message: 'Du must dich angemeldet haben sein um diese Seite besuchen zu können.'
+    })
+  }
+  Scanners.findById(req.params.id)
+  .then(data => {
+    res.render('scanners/barcode', { scanner: data, currentUser: req.user, title: config.pageTitle + ' | Scanner Erstellen' })
+  })
+  .catch(error => res.render('error', { message: error.msg, error }))
+})
+
 router.get('/', (req, res) => {
   if(!req.isAuthenticated()) {
     return res.render('failed', {
       title: 'Nicht Autenfiziert!',
-      message: 'Du must dich angemeldet haben und ein Administrator sein um diese Seite besuchen zu können.'
+      message: 'Du must dich angemeldet haben sein um diese Seite besuchen zu können.'
     })
   }
   Scanners.find()
@@ -32,7 +47,7 @@ router.get('/create', (req, res) => {
   if(!req.isAuthenticated()) {
     return res.render('failed', {
       title: 'Nicht Autenfiziert!',
-      message: 'Du must dich angemeldet haben und ein Administrator sein um diese Seite besuchen zu können.'
+      message: 'Du must dich angemeldet haben sein um diese Seite besuchen zu können.'
     })
   }
   res.render('scanners/create', { currentUser: req.user, title: config.pageTitle + ' | Scanner Erstellen' })
@@ -42,14 +57,14 @@ router.post('/create', (req, res) => {
     if(!req.isAuthenticated()) {
         return res.render('failed', {
             title: 'Nicht Autenfiziert!',
-             message: 'Du must dich angemeldet haben und ein Administrator sein um diese Seite besuchen zu können.'
+             message: 'Du must dich angemeldet haben sein um diese Seite besuchen zu können.'
         })
     }
     Scanners.create({
         name: req.body.name,
         direction: req.body.direction
     })
-	.then((scanner) => {
+	  .then((scanner) => {
         res.render('scanners/createSuccess', {
             name: scanner.name,
             token: scanner.token,
@@ -72,7 +87,7 @@ router.post('/delete', (req, res) => {
   if(!req.isAuthenticated()) {
     return res.render('failed', {
       title: 'Nicht Autenfiziert!',
-      message: 'Du must dich angemeldet haben und ein Administrator sein um diese Seite besuchen zu können.'
+      message: 'Du must dich angemeldet haben sein um diese Seite besuchen zu können.'
     })
   }
   Scanners.findByIdAndRemove(req.body.userId, (error, user) => {

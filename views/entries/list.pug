@@ -1,0 +1,18 @@
+extends ../layout
+
+block content
+	table.table
+		thead
+			tr
+				th(scope='col') Barcode
+				th(scope='col') Richtung
+				th(scope='col') Datum / Uhrzeit
+		tbody
+			each entry in entries
+				tr
+					td
+						| #{entry.barcode}
+					td
+						| #{entry.direction === 'entry' ? 'Eingang' : 'Ausgang'}
+					td
+						| #{moment(entry.createdAt).format('DD.MM.YYYY HH:mm')}

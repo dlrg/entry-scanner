@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   if(!req.isAuthenticated()) {
     return res.render('failed', {
       title: 'Nicht Autenfiziert!',
-      message: 'Du must dich angemeldet haben und ein Administrator sein um diese Seite besuchen zu können.'
+      message: 'Du must dich angemeldet haben sein um diese Seite besuchen zu können.'
     })
   }
   Users.find()
@@ -24,7 +24,7 @@ router.get('/create', (req, res) => {
   if(!req.isAuthenticated()) {
     return res.render('failed', {
       title: 'Nicht Autenfiziert!',
-      message: 'Du must dich angemeldet haben und ein Administrator sein um diese Seite besuchen zu können.'
+      message: 'Du must dich angemeldet haben sein um diese Seite besuchen zu können.'
     })
   }
   res.render('users/create', { currentUser: req.user, title: config.pageTitle + ' | Benutzer Erstellen' })
@@ -34,7 +34,7 @@ router.post('/create', (req, res) => {
   if(!req.isAuthenticated()) {
     return res.render('failed', {
       title: 'Nicht Autenfiziert!',
-      message: 'Du must dich angemeldet haben und ein Administrator sein um diese Seite besuchen zu können.'
+      message: 'Du must dich angemeldet haben sein um diese Seite besuchen zu können.'
     })
   }
 	Users.register(new Users({ username : req.body.username }), req.body.password, (error, user) => {
@@ -56,7 +56,7 @@ router.post('/delete', (req, res) => {
   if(!req.isAuthenticated()) {
     return res.render('failed', {
       title: 'Nicht Autenfiziert!',
-      message: 'Du must dich angemeldet haben und ein Administrator sein um diese Seite besuchen zu können.'
+      message: 'Du must dich angemeldet haben sein um diese Seite besuchen zu können.'
     })
   }
   Users.findByIdAndRemove(req.body.userId, (error, user) => {

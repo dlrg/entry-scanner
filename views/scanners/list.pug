@@ -14,9 +14,9 @@ block content
 					td
 						| #{scanner.name}
 					td
-						| #{scanner.name === 'entry' ? 'Ausgang' : 'Eingang'}
+						| #{scanner.direction === 'entry' ? 'Eingang' : 'Ausgang'}
 					td
-						| #{scanner.token}
+						a.btn.btn-info.btn-sm(role='button', href='/scanners/'+scanner._id+'/barcode') Token
 					td
 						form.delete-form-inline(method='post', action='/scanners/delete')
 							button.btn.btn-danger.btn-sm(

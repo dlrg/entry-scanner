@@ -8,6 +8,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var config = require('config')
 var flash = require('connect-flash');
+var moment = require('moment')
 
 var indexRouter = require('./routes/index')
 var loginRouter = require('./routes/login')
@@ -15,12 +16,15 @@ var logoutRouter = require('./routes/logout')
 var usersRouter = require('./routes/users')
 var settingsRouter = require('./routes/settings')
 var scannersRouter = require('./routes/scanners')
+var apiRouter = require('./routes/api')
+var entriesRouter = require('./routes/entries')
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+app.locals.moment = moment;
 
 app.use(logger('dev'));
 app.use(flash())
@@ -42,6 +46,8 @@ app.use('/logout', logoutRouter)
 app.use('/users', usersRouter)
 app.use('/settings', settingsRouter)
 app.use('/scanners', scannersRouter)
+app.use('/api', apiRouter)
+app.use('/entries', entriesRouter)
 
 // passport config
 var Users = require('./models/Users');
