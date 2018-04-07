@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+	h1 Scanner erstellen
+	br
+	form(role='form', action='/scanners/create', method='post', style='max-width: 500px;')
+		.form-group.row
+			label.col-sm-2.col-form-label(for='inputName') Scanner Name
+			.col-sm-10
+				input#inputName.form-control(type='text', name="name", placeholder='Scanner Name')
+		.form-group.row
+			label.col-sm-2.form-check-label(for='selectDirection') Richtung
+			.col-sm-10
+				select#selectDirection.custom-select(name='direction')
+					option(value='entry') Eingang
+					option(value='exit') Ausgang
+		.form-group.row
+			.col-sm-10
+				button.btn.btn-success(type='submit', style='margin-right:5px;') Erstellen
+				a.btn.btn-danger(role='button', href='/scanners') Abbrechen
+
+

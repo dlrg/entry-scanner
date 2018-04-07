@@ -1,0 +1,32 @@
+extends ../layout
+
+block content
+	table.table
+		thead
+			tr
+				th(scope='col') Name
+				th(scope='col') Richtung
+				th(scope='col') Token
+				th(scope='col') Löschen
+		tbody
+			each scanner in scanners
+				tr
+					td
+						| #{scanner.name}
+					td
+						| #{scanner.name === 'entry' ? 'Ausgang' : 'Eingang'}
+					td
+						| #{scanner.token}
+					td
+						form.delete-form-inline(method='post', action='/scanners/delete')
+							button.btn.btn-danger.btn-sm(
+								type='submit',
+								name='scannerId',
+								value=scanner._id,
+								data-toggle='confirmation',
+								data-title="Scanner wirklich Löschen?",
+								data-btn-ok-label="Ja",
+								data-btn-ok-class="btn-success",
+								data-btn-cancel-label="Nein",
+								data-btn-cancel-class="btn-danger"
+							) Löschen
