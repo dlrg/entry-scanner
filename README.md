@@ -9,4 +9,8 @@
 3. Go to http://localhost:3000
 
 ### Start Scanner
-You can start a scanner emulation with `npm run start:scanner`. It will output some logs and emulate a scan progress.
+This doesn't work under Windows
+1. Run `npm run start:scanner`
+2. It search for new devices every 5 seconds
+3. Scan Token from Server
+4. Scan barcodes!

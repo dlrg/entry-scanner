@@ -1,38 +1,41 @@
-var request = require('request');
+var request = require('request')
+var usbScanner = require('./lib/usbscanner').usbScanner
+var getDevices = require('./lib/usbscanner').getDevices
 
 var scannerToken = { }
 
-function onBarcode(barcode, scannerId) {
-    if (scannerToken[scannerId] === null) {
-        scannerToken[scannerId] = barcode
-        console.log("Scanner scanned token.")
-        console.log("Token: ", scannerToken[scannerId])
-        return
-    }
-    console.log(scannerToken[scannerId])
-    request.post({url:'http://localhost:3000/api/newEntry', form: {
-        token: scannerToken[scannerId],
-        barcode
-    }}, (err, httpResponse, body) => {
-        if (err) throw err
-        console.log(body)
-    })
+function onBarcode(barcode, scannerPath) {
+  if (scannerToken[scannerPath] === null) {
+    scannerToken[scannerPath] = barcode
+    console.log("New Token:", scannerToken[scannerPath])
+    return
+  }
+  console.log(scannerToken[scannerPath])
+  request.post({url:'http://localhost:3000/api/newEntry', form: {
+    token: scannerToken[scannerPath],
+    barcode
+  }}, (err, httpResponse, body) => {
+    if (err) throw err
+    body = JSON.parse(body)
+    console.log("Yay you scanned '" + body.barcode + "' in direction '" + body.direction + "'")
+  })
 }
 
-
-function onNewScannner(scannerId) {
-    console.log("Scanner found!")
-    console.log("ScannerId: ", scannerId)
-    scannerToken[scannerId] = null
+function onNewScannner(scannerPath) {
+  console.log("New Scanner: ", scannerPath)
+  scannerToken[scannerPath] = null
+  let scanner = new usbScanner(scannerPath)
+  scanner.on('data', (code) => {
+    onBarcode(code, scannerPath)
+  })
 }
 
-console.log("Waiting for Scanner....")
-setTimeout(() => {
-    onNewScannner('blabla')
-    setTimeout(() => {
-        onBarcode('89bc0ee758d203568ae827ef41855da7', 'blabla')
-        setTimeout(() => {
-            onBarcode('blabla ausweis 123', 'blabla')
-        }, 2000)
-    }, 2000)
-}, 2000)
+function searchForNewDevices() {
+  let connectedHidDevices = getDevices().filter(val => val.productId === 1793 && val.vendorId === 9639)
+  connectedHidDevices.forEach(device => {
+    if (scannerToken[device.path] === undefined) onNewScannner(device.path)
+  })
+}
+
+setInterval(searchForNewDevices, 5000)
+searchForNewDevices()
