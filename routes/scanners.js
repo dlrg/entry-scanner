@@ -14,7 +14,7 @@ router.get('/:id/barcode', (req, res) => {
   }
   Scanners.findById(req.params.id)
   .then(data => {
-    res.render('scanners/barcode', { scanner: data, currentUser: req.user, title: config.pageTitle + ' | Scanner Erstellen' })
+    res.render('scanners/barcode', { scanner: data, currentUser: req.user, title: config.pageTitle + ' | Token' })
   })
   .catch(error => res.render('error', { message: error.msg, error }))
 })

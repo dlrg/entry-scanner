@@ -1,6 +1,11 @@
 extends ../app
 
 block body
-	svg.barcode(jsbarcode-value=scanner.token)
+	.section-to-print(style='font-size: 20px')
+		| Scanner: #{scanner.name}
+		br
+		| Richtung: #{scanner.direction === 'entry' ? 'Eingang' : 'Ausgang'}
+		br
+		svg.barcode(jsbarcode-value=scanner.token)
 	hr
 	a(href='/scanners', style='margin-left:10px;') Zurück
