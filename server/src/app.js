@@ -16,7 +16,6 @@ const services = require('./services');
 const appHooks = require('./app.hooks');
 const channels = require('./channels');
 
-const mongodb = require('./mongodb');
 const scanner = require('./scanner');
 
 const app = express(feathers());
@@ -37,7 +36,6 @@ app.use('/', express.static(app.get('public')));
 app.configure(express.rest());
 app.configure(socketio());
 
-app.configure(mongodb);
 app.configure(scanner);
 
 // Configure other middleware (see `middleware/index.js`)
