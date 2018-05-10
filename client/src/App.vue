@@ -28,7 +28,7 @@ export default {
       return this.$store.getters["entry/list"];
     },
     entriesToday() {
-      return this.entries.filter(entry => isToday(new Date(entry.createdAt)));
+      return this.entries; //.filter(entry => isToday(new Date(entry.createdAt)));
     },
     entriesEingang() {
       return this.entriesToday.filter(
@@ -55,14 +55,23 @@ export default {
         if (!dataAusgang[bucket]) dataAusgang[bucket] = 0;
         dataAusgang[bucket]--;
       }
-      let dataDiff = {};
-      for (let entry of this.entriesToday) {
+      let dataTotal = {};
+      let bucketData = {};
+
+      for (let entry of this.entries) {
         if (!entry.createdAt) continue;
         let bucket = timebucket("m", new Date(entry.createdAt)).toDate();
-        if (!dataDiff[bucket]) dataDiff[bucket] = 0;
-        if (entry.direction === "SCANNER-EINGANG") dataDiff[bucket]++;
-        if (entry.direction === "SCANNER-AUSGANG") dataDiff[bucket]--;
+        if (!bucketData[bucket]) bucketData[bucket] = 0;
+        if (entry.direction === "SCANNER-EINGANG") bucketData[bucket]++;
+        if (entry.direction === "SCANNER-AUSGANG") bucketData[bucket]--;
       }
+      let cur = 0;
+      Object.keys(bucketData)
+        .sort((a, b) => (a > b ? 1 : -1))
+        .forEach(key => {
+          cur += bucketData[key];
+          dataTotal[key] = cur;
+        });
       return [
         {
           name: "Eingang",
@@ -73,8 +82,8 @@ export default {
           data: dataAusgang
         },
         {
-          name: "Differenz",
-          data: dataDiff
+          name: "Total",
+          data: dataTotal
         }
       ];
     }
