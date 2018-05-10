@@ -1,9 +1,13 @@
 <template>
   <div>
-    Total: {{ entriesToday.length }}
-    Eingang: {{ entriesEingang.length }}
-    Ausgang: {{ entriesAusgang.length }}
-    Differenz: {{ entriesEingang.length - entriesAusgang.length }}
+    <p>
+      Total: {{ entriesToday.length }}
+      Eingang: {{ entriesEingang.length }}
+      Ausgang: {{ entriesAusgang.length }}
+      Differenz: {{ entriesEingang.length - entriesAusgang.length }}
+    </p>
+    <line-chart :data="lineData"/>
+
   </div>
 </template>
 
@@ -16,6 +20,7 @@ function isToday(td) {
     td.getFullYear() == d.getFullYear()
   );
 }
+import timebucket from "timebucket";
 export default {
   name: "App",
   computed: {
@@ -34,6 +39,44 @@ export default {
       return this.entriesToday.filter(
         entry => entry.direction === "SCANNER-AUSGANG"
       );
+    },
+    lineData() {
+      let dataEingang = {};
+      for (let entry of this.entriesEingang) {
+        if (!entry.createdAt) continue;
+        let bucket = timebucket("m", new Date(entry.createdAt)).toDate();
+        if (!dataEingang[bucket]) dataEingang[bucket] = 0;
+        dataEingang[bucket]++;
+      }
+      let dataAusgang = {};
+      for (let entry of this.entriesAusgang) {
+        if (!entry.createdAt) continue;
+        let bucket = timebucket("m", new Date(entry.createdAt)).toDate();
+        if (!dataAusgang[bucket]) dataAusgang[bucket] = 0;
+        dataAusgang[bucket]--;
+      }
+      let dataDiff = {};
+      for (let entry of this.entriesToday) {
+        if (!entry.createdAt) continue;
+        let bucket = timebucket("m", new Date(entry.createdAt)).toDate();
+        if (!dataDiff[bucket]) dataDiff[bucket] = 0;
+        if (entry.direction === "SCANNER-EINGANG") dataDiff[bucket]++;
+        if (entry.direction === "SCANNER-AUSGANG") dataDiff[bucket]--;
+      }
+      return [
+        {
+          name: "Eingang",
+          data: dataEingang
+        },
+        {
+          name: "Ausgang",
+          data: dataAusgang
+        },
+        {
+          name: "Differenz",
+          data: dataDiff
+        }
+      ];
     }
   },
   created() {

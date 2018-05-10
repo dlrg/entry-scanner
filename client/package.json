@@ -11,10 +11,13 @@
     "@feathersjs/authentication-client": "^1.0.2",
     "@feathersjs/feathers": "^3.1.5",
     "@feathersjs/socketio-client": "^1.1.0",
+    "chart.js": "^2.7.2",
     "feathers-vuex": "^1.3.0",
     "socket.io-client": "^2.1.0",
+    "timebucket": "^0.4.0",
     "vue": "^2.5.16",
     "vue-chartjs": "^3.3.1",
+    "vue-chartkick": "^0.3.1",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
