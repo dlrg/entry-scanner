@@ -3,12 +3,10 @@ const createService = require('./statistics.class.js');
 const hooks = require('./statistics.hooks');
 
 module.exports = function (app) {
-  
-  const paginate = app.get('paginate');
 
   const options = {
     name: 'statistics',
-    paginate
+    app
   };
 
   // Initialize our service with any options it requires

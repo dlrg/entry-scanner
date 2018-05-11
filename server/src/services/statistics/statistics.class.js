@@ -2,36 +2,26 @@
 class Service {
   constructor (options) {
     this.options = options || {};
-  }
-
-  async find (params) {
-    return [];
-  }
-
-  async get (id, params) {
-    return {
-      id, text: `A new message with ID: ${id}!`
+    this.app = options.app;
+    this.Statistics = {
+      async currentVisitors () {
+        const entries = await this.app.service('entry').find();
+        const populatedEntries = await Promise.all(entries.map(entry => {
+          return this.app.service('station')
+            .get(entry.stationId)
+            .then(station => ({}.assign(entry, {station})));
+        }));
+        return populatedEntries.reduce((acc, entry) => acc += entry.station.direction, 0);
+      }
     };
   }
 
-  async create (data, params) {
-    if (Array.isArray(data)) {
-      return await Promise.all(data.map(current => this.create(current)));
-    }
-
-    return data;
+  async find (params) {
+    return Object.keys(this.Statistics);
   }
 
-  async update (id, data, params) {
-    return data;
-  }
-
-  async patch (id, data, params) {
-    return data;
-  }
-
-  async remove (id, params) {
-    return { id };
+  async get (id, params) {
+    return this.Statistics[id]();
   }
 }
 
