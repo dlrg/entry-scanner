@@ -1,7 +1,6 @@
 <template>
   <div>
     <p>
-      Total: {{ entriesToday.length }}
       Eingang: {{ entriesEingang.length }}
       Ausgang: {{ entriesAusgang.length }}
       Differenz: {{ entriesEingang.length - entriesAusgang.length }}

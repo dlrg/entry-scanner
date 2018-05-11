@@ -3,7 +3,6 @@
     <main @click="count">
       <counter :value="currentVisitors" name="Besucher aktuell"/>
       <counter :value="ownCount" name="Selber gezählte Besucher"/>
-      {{ stationId }}
     </main>
     <stationSelect v-model="stationId" class="stationSelect"/>
   </section>
