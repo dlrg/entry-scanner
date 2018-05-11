@@ -14,6 +14,18 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss">
+  .counter {
+    padding: 3em 0;
+    text-align: center;
+    color: #fff;
+    .counter__value {
+      margin: 0;
+      font-size: 3em;
+    }
+    .counter__name {
+      margin: 0;
+      font-size: 1em;
+    }
+  }
 </style>
