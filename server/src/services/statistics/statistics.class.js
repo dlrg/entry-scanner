@@ -1,17 +1,24 @@
 /* eslint-disable no-unused-vars */
 class Service {
-  constructor (options) {
-    this.options = options || {};
-    this.app = options.app;
+  constructor ({app}) {
+    this.events = ['patched'];
+
     this.Statistics = {
       async currentVisitors () {
-        const entries = await this.app.service('entry').find();
-        const populatedEntries = await Promise.all(entries.map(entry => {
-          return this.app.service('station')
+        const entries = await app.service('entry').find();
+        const populatedEntries = await Promise.all(entries.filter(entry => !!entry.stationId).map(entry => {
+          return app.service('station')
             .get(entry.stationId)
-            .then(station => ({}.assign(entry, {station})));
+            .then(station => (Object.assign(entry, {station})));
         }));
-        return populatedEntries.reduce((acc, entry) => acc += entry.station.direction, 0);
+        const data = populatedEntries.reduce((acc, entry) => {
+          acc += entry.station.direction;
+          return acc;
+        }, 0);
+        return {
+          _id: 'currentVisitors',
+          data
+        };
       }
     };
   }

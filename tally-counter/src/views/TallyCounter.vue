@@ -1,10 +1,11 @@
 <template>
   <section :class="{blink}" @transitionend="blink = false">
     <main @click="count">
-      <counter :value="globalCount" name="Besucher aktuell"/>
+      <counter :value="currentVisitors" name="Besucher aktuell"/>
       <counter :value="ownCount" name="Selber gezählte Besucher"/>
+      {{ stationId }}
     </main>
-    <stationSelect :stationId="stationId" class="stationSelect"/>
+    <stationSelect v-model="stationId" class="stationSelect"/>
   </section>
 </template>
 
@@ -21,9 +22,14 @@ export default {
   data () {
     return {
       ownCount: 0,
-      globalCount: 300,
       blink: false,
       stationId: null
+    }
+  },
+  computed: {
+    currentVisitors () {
+      let currentVisitors = this.$store.getters['statistics/get']('currentVisitors')
+      return currentVisitors ? currentVisitors.data : 0
     }
   },
   methods: {
@@ -32,13 +38,18 @@ export default {
     }),
     count () {
       const { stationId } = this
-      navigator.vibrate(100)
-      this.blink = true
-      this.ownCount++
-      this.enter({
-        stationId
-      })
+      if (stationId) {
+        navigator.vibrate(100)
+        this.blink = true
+        this.ownCount++
+        this.enter({
+          stationId
+        })
+      }
     }
+  },
+  created () {
+    this.$store.dispatch('statistics/get', 'currentVisitors')
   }
 }
 </script>

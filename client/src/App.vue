@@ -7,7 +7,6 @@
       Differenz: {{ entriesEingang.length - entriesAusgang.length }}
     </p>
     <line-chart :data="lineData"/>
-
   </div>
 </template>
 
@@ -25,20 +24,20 @@ export default {
   name: "App",
   computed: {
     entries() {
-      return this.$store.getters["entry/list"];
+      return this.$store.getters["entry/list"].map(entry => {
+        let station = this.$store.getters["station/get"](entry.stationId);
+        if (!station) return entry;
+        return { ...entry, direction: station.direction };
+      });
     },
     entriesToday() {
       return this.entries; //.filter(entry => isToday(new Date(entry.createdAt)));
     },
     entriesEingang() {
-      return this.entriesToday.filter(
-        entry => entry.direction === "SCANNER-EINGANG"
-      );
+      return this.entriesToday.filter(entry => entry.direction === 1);
     },
     entriesAusgang() {
-      return this.entriesToday.filter(
-        entry => entry.direction === "SCANNER-AUSGANG"
-      );
+      return this.entriesToday.filter(entry => entry.direction === -1);
     },
     lineData() {
       let dataEingang = {};
@@ -62,8 +61,7 @@ export default {
         if (!entry.createdAt) continue;
         let bucket = timebucket("m", new Date(entry.createdAt)).toDate();
         if (!bucketData[bucket]) bucketData[bucket] = 0;
-        if (entry.direction === "SCANNER-EINGANG") bucketData[bucket]++;
-        if (entry.direction === "SCANNER-AUSGANG") bucketData[bucket]--;
+        bucketData[bucket] += entry.direction;
       }
       let cur = 0;
       Object.keys(bucketData)
@@ -90,6 +88,7 @@ export default {
   },
   created() {
     this.$store.dispatch("entry/find");
+    this.$store.dispatch("station/find");
   }
 };
 </script>

@@ -16,4 +16,9 @@ module.exports = function (app) {
   const service = app.service('statistics');
 
   service.hooks(hooks);
+  app.service('entry').on('created', () => {
+    service.get('currentVisitors').then(data => {
+      service.emit('patched', data);
+    });
+  });
 };

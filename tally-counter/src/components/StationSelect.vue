@@ -1,16 +1,21 @@
 <template>
-  <select>
-    <option>Station 1</option>
-    <option>Station 2</option>
-    <option>Station 3</option>
+  <select :value="value" @change="$emit('input', $event.target.value)">
+    <option :value="undefined" hidden disabled>Keine Station ausgewählt</option>
+    <option v-for="station of stations" :key="station._id" :value="station._id">{{ station.name }}</option>
   </select>
 </template>
 
 <script>
 export default {
-  props: {
-    value: Number,
-    name: String
+  name: 'StationSelect',
+  props: ['value'],
+  computed: {
+    stations () {
+      return this.$store.getters['station/list']
+    }
+  },
+  created () {
+    this.$store.dispatch('station/find')
   }
 }
 </script>
